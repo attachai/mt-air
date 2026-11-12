@@ -1,0 +1,50 @@
+# MT Air
+
+ระบบดูแลลูกค้าและงานบริการติดตั้ง ล้าง ซ่อม และตรวจเช็กแอร์ สำหรับพนักงานภายใน รองรับลูกค้าและหลายสถานที่ เครื่องแอร์ รายการบริการ งานและช่าง เอกสาร PDF/รูปภาพ และรายงานสรุป
+
+## เริ่มต้นในเครื่อง
+
+ต้องมี Node.js 20.19+ และ npm จากนั้น:
+
+```bash
+npm install
+npm run db:local
+```
+
+สร้างไฟล์ `.dev.vars` ที่เครื่องของคุณเอง และตั้งค่า `SETUP_KEY` เป็นข้อความสุ่มอย่างน้อย 20 ตัวอักษร ห้าม commit ไฟล์นี้ จากนั้นรัน `npm run dev` และเปิด URL ที่ Vite แสดง หน้าแรกจะให้สร้างผู้ดูแลระบบคนแรกโดยใช้รหัสตั้งค่า รหัสผ่านบัญชีต้องมีอย่างน้อย 12 ตัวอักษร
+
+```dotenv
+SETUP_KEY=replace-with-a-long-random-value
+```
+
+ไฟล์แนบใช้ R2 binding ชื่อ `FILES` หากยังไม่ได้เปิดบริการ R2 ส่วนอื่นของระบบยังใช้งานได้ และ API ไฟล์จะแจ้งว่าไม่พร้อมใช้งาน
+
+## โครงสร้าง
+
+- `src/` — หน้า React ภาษาไทยและ UI แบบ responsive
+- `worker/` — API, session, สิทธิ์, ตรวจไฟล์ และรายงาน
+- `migrations/` — schema D1
+- `wrangler.jsonc` — Worker และ D1 binding ที่เผยแพร่ได้
+- `PLAN.md` — ขอบเขตและรายการงานทั้งหมด
+
+ข้อมูลลูกค้าและไฟล์ไม่อยู่ใน GitHub: ข้อมูลอยู่ใน D1, ไฟล์อยู่ใน R2 แบบ private และเปิดผ่าน API ที่ตรวจ session เท่านั้น
+
+## เปิดใช้บน Cloudflare
+
+1. สร้าง D1 `mt-air-db` และใช้ ID จริงใน `wrangler.jsonc` แล้วรัน migration ด้วย `npm run db:remote` (หรือใช้ D1 Studio ด้วย SQL ใน migration)
+2. เปิด R2 แล้วสร้าง private bucket `mt-air-files` เพิ่ม binding `FILES` ไปยัง bucket นี้ใน `wrangler.jsonc` ก่อนเปิดใช้ไฟล์แนบ
+3. เชื่อม GitHub `attachai/mt-air` กับ Cloudflare Workers Builds โดยให้ branch `main` deploy Worker ชื่อ `mt-air` ใช้ `npm run build` และ `npx wrangler deploy` เปิด preview builds เฉพาะเมื่อผูก D1/R2 แยกจาก production แล้ว
+4. ตั้ง Worker secret `SETUP_KEY` เป็นค่าสุ่มอย่างน้อย 20 ตัวอักษรจาก Cloudflare dashboard แล้วเปิดแอปเพื่อสร้างบัญชีผู้ดูแลระบบคนแรก เมื่อสร้างบัญชีแล้ว `/api/setup` จะปฏิเสธการสร้างซ้ำ
+5. ตรวจ `/api/health`, login, ลูกค้า, งาน, ไฟล์แนบ, รายงาน และสิทธิ์ ก่อนให้ทีมใช้งานจริง
+
+ห้ามใส่ `SETUP_KEY`, รหัสผ่าน, token, ข้อมูลลูกค้าจริง หรือไฟล์ลูกค้าใน repository สาธารณะ
+
+## ตรวจงาน
+
+```bash
+npm run typecheck
+npm run build
+node scripts/smoke.mjs
+```
+
+Smoke script ทดสอบ API local โดยสร้างข้อมูลตัวอย่างและบัญชีทดสอบในฐาน local เท่านั้น ต้องรัน dev server และมี `.dev.vars` ก่อน
