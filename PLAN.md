@@ -2,6 +2,16 @@
 
 > สถานะ ณ 12 พฤศจิกายน 2026: สร้างแอป React + Worker และฐาน D1 production/preview แล้ว ส่วนการเปิด R2 และการเชื่อม Workers Builds กับ GitHub อยู่ระหว่างดำเนินการ ดูสถานะล่าสุดใน README.md
 
+## งานที่กำลังทำตอนนี้
+
+- [x] สร้าง React UI, Worker API, schema D1 และทดสอบ flow local
+- [x] สร้าง D1 production/preview บน Cloudflare และลง schema
+- [x] ส่งโค้ดขึ้น GitHub `attachai/mt-air`
+- [ ] อนุญาตแอป Cloudflare Workers and Pages เชื่อม GitHub `attachai/mt-air`
+- [ ] เจ้าของบัญชีเปิด R2 subscription แล้วสร้าง bucket สำหรับไฟล์บริการ
+- [ ] ตั้ง Workers Builds จาก branch `main`, ตั้ง secret และสร้างผู้ดูแลระบบคนแรก
+- [ ] ตรวจ login, งาน, ไฟล์ และรายงานบน URL production ก่อนใช้งานจริง
+
 ## 1. เป้าหมายและขอบเขต
 
 สร้างเว็บภาษาไทยสำหรับทีมงานภายใน ใช้บันทึกลูกค้า สถานที่ติดตั้ง เครื่องปรับอากาศ งานติดตั้ง/ล้าง/ซ่อม/ตรวจเช็ก เอกสาร และภาพก่อน–หลังบริการ ลูกค้าเป็นข้อมูลในระบบ ไม่ต้องมีบัญชีเข้าใช้งานในรุ่นแรก
