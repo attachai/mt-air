@@ -124,7 +124,7 @@ flowchart LR
 - [ ] สร้าง React + TypeScript + Vite, Cloudflare Vite plugin, Worker API, React Router
 - [ ] ตั้งค่า lint/typecheck/build, README, `.gitignore`, `.env.example`, `wrangler.jsonc`
 - [ ] สร้าง D1 production/preview และ R2 production/preview แบบแยกกัน แล้วกำหนด binding
-- [ ] สร้าง migration และ seed เฉพาะประเภทบริการตัวอย่าง; ไม่ seed ข้อมูลลูกค้าจริงลง Git
+- [x] สร้าง migration และ seed เฉพาะประเภทบริการตัวอย่าง; ไม่ seed ข้อมูลลูกค้าจริงลง Git
 - [ ] เชื่อม GitHub `attachai/mt-air` กับ Workers Builds; ตั้ง branch `main` และ preview builds
 - [ ] กำหนดขั้นตอนรัน migration ที่ควบคุมได้ก่อน deploy เวอร์ชันที่ใช้ schema ใหม่
 

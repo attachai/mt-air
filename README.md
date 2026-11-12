@@ -31,7 +31,7 @@ SETUP_KEY=replace-with-a-long-random-value
 
 ## เปิดใช้บน Cloudflare
 
-1. สร้าง D1 `mt-air-db` และใช้ ID จริงใน `wrangler.jsonc` แล้วรัน migration ด้วย `npm run db:remote` (หรือใช้ D1 Studio ด้วย SQL ใน migration)
+1. สร้าง D1 `mt-air-db` และใช้ ID จริงใน `wrangler.jsonc` แล้วรัน migration ด้วย `npm run db:remote` (หรือใช้ D1 Studio ด้วย SQL ใน migration) migration ที่สองเพิ่มประเภทบริการพื้นฐานโดยยังไม่กำหนดราคา
 2. เปิด R2 แล้วสร้าง private bucket `mt-air-files` เพิ่ม binding `FILES` ไปยัง bucket นี้ใน `wrangler.jsonc` ก่อนเปิดใช้ไฟล์แนบ
 3. เชื่อม GitHub `attachai/mt-air` กับ Cloudflare Workers Builds โดยให้ branch `main` deploy Worker ชื่อ `mt-air` ใช้ `npm run build` และ `npx wrangler deploy` เปิด preview builds เฉพาะเมื่อผูก D1/R2 แยกจาก production แล้ว
 4. ตั้ง Worker secret `SETUP_KEY` เป็นค่าสุ่มอย่างน้อย 20 ตัวอักษรจาก Cloudflare dashboard แล้วเปิดแอปเพื่อสร้างบัญชีผู้ดูแลระบบคนแรก เมื่อสร้างบัญชีแล้ว `/api/setup` จะปฏิเสธการสร้างซ้ำ
