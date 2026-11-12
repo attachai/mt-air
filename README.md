@@ -17,7 +17,7 @@ npm run db:local
 SETUP_KEY=replace-with-a-long-random-value
 ```
 
-ไฟล์แนบใช้ R2 binding ชื่อ `FILES` หากยังไม่ได้เปิดบริการ R2 ส่วนอื่นของระบบยังใช้งานได้ และ API ไฟล์จะแจ้งว่าไม่พร้อมใช้งาน
+ไฟล์แนบใช้ R2 binding ชื่อ `FILES` ซึ่งผูกกับ `mt-air-files` ใน Cloudflare สำหรับ local dev จะใช้ R2 จำลองในเครื่อง
 
 ## โครงสร้าง
 

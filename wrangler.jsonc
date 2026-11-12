@@ -12,5 +12,9 @@
     "database_name": "mt-air-db",
     "database_id": "44fb96f4-16cd-4a94-b611-c0446118787c",
     "migrations_dir": "migrations"
+  }],
+  "r2_buckets": [{
+    "binding": "FILES",
+    "bucket_name": "mt-air-files"
   }]
 }
