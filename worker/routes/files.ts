@@ -63,10 +63,11 @@ export function registerFileRoutes(app: Hono<AppContext>): void {
     const object = await c.env.FILES.get(file.r2_key);
     if (!object) return c.json({ error: 'ไม่พบไฟล์ในคลัง' }, 404);
     const safeName = file.original_name.replace(/[\r\n"\\]/g, '_');
+    const fallbackName = `attachment.${file.mime_type === 'application/pdf' ? 'pdf' : file.mime_type.split('/')[1]}`;
     return new Response(object.body, {
       headers: {
         'Content-Type': file.mime_type,
-        'Content-Disposition': `inline; filename="${safeName}"`,
+        'Content-Disposition': `inline; filename="${fallbackName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`,
         'Content-Length': String(object.size),
         'Cache-Control': 'private, no-store',
         'X-Content-Type-Options': 'nosniff',
