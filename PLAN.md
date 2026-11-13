@@ -1,6 +1,6 @@
 # แผนสร้างระบบดูแลลูกค้าและงานบริการแอร์ (MT Air)
 
-> สถานะ ณ 13 พฤศจิกายน 2026: แอป React + Worker เผยแพร่ผ่าน GitHub บน Cloudflare แล้ว ผูก D1 และ R2 production และตั้ง `SETUP_KEY` เป็น Secret แล้ว กำลังสร้างผู้ดูแลระบบคนแรกและตรวจ flow บน production
+> สถานะ ณ 13 พฤศจิกายน 2026: แอปเปิดใช้งานที่ [mt-air.attachai-c.workers.dev](https://mt-air.attachai-c.workers.dev/login) แล้ว ผู้ดูแลระบบคนแรกสร้างสำเร็จ หน้า Dashboard และเมนูหลักโหลดได้บน production
 
 ## งานที่กำลังทำตอนนี้
 
@@ -10,9 +10,10 @@
 - [x] อนุญาตแอป Cloudflare Workers and Pages เชื่อม GitHub `attachai/mt-air` เท่านั้น
 - [x] เจ้าของบัญชีเปิด R2 subscription แล้วสร้าง bucket สำหรับไฟล์บริการและ preview
 - [x] ตั้ง Workers Builds จาก branch `main` และตั้ง `SETUP_KEY` เป็น Secret
-- [ ] สร้างผู้ดูแลระบบคนแรกด้วยรหัสตั้งค่าที่เจ้าของบัญชีกรอกเอง
-- [ ] ตรวจสิทธิ์ API token ที่ Workers Builds ใช้งานจริง
-- [ ] ตรวจ login, งาน, ไฟล์ และรายงานบน URL production ก่อนใช้งานจริง
+- [x] สร้างผู้ดูแลระบบคนแรกด้วยรหัสตั้งค่าที่เจ้าของบัญชีกรอกเอง
+- [x] จำกัด token ที่ Workers Builds ใช้จริงให้มีเฉพาะ Workers Scripts Edit, D1 Read และ R2 Read พร้อมวันหมดอายุหนึ่งปี
+- [x] ตรวจ Dashboard, ลูกค้า, งาน, บริการ, รายงาน และหน้าพนักงานบน URL production
+- [ ] ทดสอบสร้างงานและอัปโหลดไฟล์จริงบน production โดยใช้ข้อมูลทดสอบที่เจ้าของบัญชีอนุญาต
 
 ## 1. เป้าหมายและขอบเขต
 
@@ -115,7 +116,7 @@ flowchart LR
 
 - [ ] ยืนยันชื่อระบบ โลโก้ และโดเมนที่จะใช้ (เริ่มจาก `workers.dev` ได้)
 - [ ] กำหนดข้อมูลบังคับของลูกค้า/สถานที่/เครื่อง และตัวอย่างงานจริง 3–5 กรณี
-- [ ] ยืนยันว่ารุ่นแรกเป็นระบบของพนักงานเท่านั้น; ระบุผู้ดูแลระบบคนแรกโดยไม่ใส่รหัสผ่านใน Git
+- [x] ยืนยันว่ารุ่นแรกเป็นระบบของพนักงานเท่านั้น; ระบุผู้ดูแลระบบคนแรกโดยไม่ใส่รหัสผ่านใน Git
 - [ ] กำหนดชนิดไฟล์/ขนาดสูงสุด/ระยะเวลาเก็บข้อมูลและสิทธิ์ของแต่ละบทบาท
 - [ ] ตรวจค่าใช้จ่าย/โควตาของ Cloudflare; เปิดใช้งาน R2 โดยเจ้าของบัญชีเมื่อพร้อม เพราะ R2 ต้องมี subscription แม้มี free monthly usage
 
@@ -123,21 +124,21 @@ flowchart LR
 
 ### P1 — โครงแอปและ Cloudflare
 
-- [ ] สร้าง React + TypeScript + Vite, Cloudflare Vite plugin, Worker API, React Router
-- [ ] ตั้งค่า lint/typecheck/build, README, `.gitignore`, `.env.example`, `wrangler.jsonc`
+- [x] สร้าง React + TypeScript + Vite, Cloudflare Vite plugin, Worker API, React Router
+- [x] ตั้งค่า typecheck/build, README, `.gitignore`, `.env.example`, `wrangler.jsonc`
 - [ ] สร้าง D1 production/preview และ R2 production/preview แบบแยกกัน แล้วกำหนด binding
 - [x] สร้าง migration และ seed เฉพาะประเภทบริการตัวอย่าง; ไม่ seed ข้อมูลลูกค้าจริงลง Git
-- [ ] เชื่อม GitHub `attachai/mt-air` กับ Workers Builds; ตั้ง branch `main` และ preview builds
+- [x] เชื่อม GitHub `attachai/mt-air` กับ Workers Builds; ตั้ง branch `main` และปิด preview builds จนกว่าจะผูกฐานข้อมูล/ไฟล์ preview แยกครบ
 - [ ] กำหนดขั้นตอนรัน migration ที่ควบคุมได้ก่อน deploy เวอร์ชันที่ใช้ schema ใหม่
 
 **ผ่านเมื่อ:** หน้าเริ่มต้นกับ `/api/health` ทำงานทั้ง local และ preview, production deploy จาก Git ได้, preview ไม่แตะฐาน/ไฟล์ production
 
 ### P2 — Login และสิทธิ์
 
-- [ ] ทำหน้า login/logout และ API สร้าง/ยกเลิก session
-- [ ] ทำ bootstrap ผู้ดูแลระบบคนแรกผ่านขั้นตอนที่ปลอดภัยและไม่ commit credential
-- [ ] ทำ middleware ตรวจ session/บทบาท; หน้าและ API ที่ไม่อนุญาตตอบ 401/403 ถูกต้อง
-- [ ] ทำหน้าจัดการพนักงานสำหรับ admin และ audit log ขั้นพื้นฐาน
+- [x] ทำหน้า login/logout และ API สร้าง/ยกเลิก session
+- [x] ทำ bootstrap ผู้ดูแลระบบคนแรกผ่านขั้นตอนที่ปลอดภัยและไม่ commit credential
+- [x] ทำ middleware ตรวจ session/บทบาท; หน้าและ API ที่ไม่อนุญาตตอบ 401/403 ถูกต้อง
+- [x] ทำหน้าจัดการพนักงานสำหรับ admin และ audit log ขั้นพื้นฐาน
 - [ ] ทดสอบรหัสผิด หมดอายุ ปิดบัญชี และการเรียก API โดยไม่ login
 
 **ผ่านเมื่อ:** ผู้ไม่มีสิทธิ์ไม่อ่านข้อมูลลูกค้าหรือไฟล์ได้แม้เรียก API โดยตรง
