@@ -69,7 +69,7 @@ function LoginPage() {
           {setup.needsSetup && <Field label="ชื่อผู้ดูแลระบบ" required><input value={name} onChange={(e) => setName(e.target.value)} required minLength={2} autoComplete="name" /></Field>}
           <Field label="อีเมล" required><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" /></Field>
           <Field label="รหัสผ่าน" required><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={setup.needsSetup ? 12 : undefined} autoComplete={setup.needsSetup ? 'new-password' : 'current-password'} /></Field>
-          {setup.needsSetup && <Field label="รหัสตั้งค่า" hint="รหัสนี้ตั้งไว้ใน Cloudflare และใช้สร้างบัญชีคนแรกเท่านั้น" required><input type="password" value={setupKey} onChange={(e) => setSetupKey(e.target.value)} required autoComplete="off" /></Field>}
+          {setup.needsSetup && <Field label="รหัสตั้งค่า" hint="ใช้ค่า SETUP_KEY ล่าสุดใน Cloudflare อย่างน้อย 20 ตัว ใช้สร้างบัญชีคนแรกเท่านั้น" required><input type="password" value={setupKey} onChange={(e) => setSetupKey(e.target.value)} required minLength={20} autoComplete="off" /></Field>}
           <button className="button button-primary button-block" disabled={busy || (setup.needsSetup && !setup.setupAvailable)}>{busy ? 'กำลังดำเนินการ…' : setup.needsSetup ? 'สร้างผู้ดูแลระบบ' : 'เข้าสู่ระบบ'}</button>
         </form>}
       </div></section>

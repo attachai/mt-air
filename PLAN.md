@@ -1,6 +1,6 @@
 # แผนสร้างระบบดูแลลูกค้าและงานบริการแอร์ (MT Air)
 
-> สถานะ ณ 12 พฤศจิกายน 2026: สร้างแอป React + Worker, D1 และ R2 production/preview แล้ว และเชื่อม GitHub กับ Cloudflare แล้ว กำลังตั้งค่า Workers Builds และตรวจ deploy จริง
+> สถานะ ณ 13 พฤศจิกายน 2026: แอป React + Worker เผยแพร่ผ่าน GitHub บน Cloudflare แล้ว ผูก D1 และ R2 production และตั้ง `SETUP_KEY` เป็น Secret แล้ว กำลังสร้างผู้ดูแลระบบคนแรกและตรวจ flow บน production
 
 ## งานที่กำลังทำตอนนี้
 
@@ -9,7 +9,9 @@
 - [x] ส่งโค้ดขึ้น GitHub `attachai/mt-air`
 - [x] อนุญาตแอป Cloudflare Workers and Pages เชื่อม GitHub `attachai/mt-air` เท่านั้น
 - [x] เจ้าของบัญชีเปิด R2 subscription แล้วสร้าง bucket สำหรับไฟล์บริการและ preview
-- [ ] ตั้ง Workers Builds จาก branch `main`, ตั้ง secret และสร้างผู้ดูแลระบบคนแรก
+- [x] ตั้ง Workers Builds จาก branch `main` และตั้ง `SETUP_KEY` เป็น Secret
+- [ ] สร้างผู้ดูแลระบบคนแรกด้วยรหัสตั้งค่าที่เจ้าของบัญชีกรอกเอง
+- [ ] ตรวจสิทธิ์ API token ที่ Workers Builds ใช้งานจริง
 - [ ] ตรวจ login, งาน, ไฟล์ และรายงานบน URL production ก่อนใช้งานจริง
 
 ## 1. เป้าหมายและขอบเขต

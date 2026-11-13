@@ -19,6 +19,8 @@ export type AppContext = { Bindings: Env; Variables: { user: User } };
 type Ctx = Context<AppContext>;
 
 const encoder = new TextEncoder();
+// Cloudflare Workers production caps native PBKDF2 at 100,000 iterations.
+const PASSWORD_ITERATIONS = 100_000;
 
 function hex(bytes: Uint8Array): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
@@ -32,16 +34,16 @@ export async function hashPassword(password: string): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
   const hash = new Uint8Array(await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 310_000 }, key, 256,
+    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: PASSWORD_ITERATIONS }, key, 256,
   ));
-  return `pbkdf2-sha256$310000$${hex(salt)}$${hex(hash)}`;
+  return `pbkdf2-sha256$${PASSWORD_ITERATIONS}$${hex(salt)}$${hex(hash)}`;
 }
 
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {
   const [algorithm, iterationsText, saltHex, expectedHex] = stored.split('$');
   if (algorithm !== 'pbkdf2-sha256' || !iterationsText || !saltHex || !expectedHex) return false;
   const iterations = Number(iterationsText);
-  if (!Number.isInteger(iterations) || iterations < 100_000 || iterations > 1_000_000) return false;
+  if (!Number.isInteger(iterations) || iterations < 100_000 || iterations > PASSWORD_ITERATIONS) return false;
   const salt = Uint8Array.from(saltHex.match(/.{2}/g) ?? [], (part) => parseInt(part, 16));
   const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
   const actual = hex(new Uint8Array(await crypto.subtle.deriveBits(
